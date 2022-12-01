@@ -3,6 +3,19 @@
     <h1>{{ msg }}</h1>
     <button @click="openModal">モーダルを開く</button>
     <TheModal :isVisible="modalVisivle" @close="closeModal" />
+
+    <p>
+      <button @click="vum_showModal">Show modal</button>
+    </p>
+    <!-- If the option changed modal component the name
+  <MyModal>
+  -->
+    <Modal v-model="vum_isShow" :close="vum_closeModal">
+      <div class="vum_modal">
+        <p>Hello</p>
+        <button @click="vum_closeModal">close</button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -27,10 +40,24 @@ export default defineComponent({
       modalVisivle.value = false;
     };
 
+    ///// vue-universal-modal
+    const vum_isShow = ref(false);
+
+    const vum_showModal = () => {
+      vum_isShow.value = true;
+    };
+
+    const vum_closeModal = () => {
+      vum_isShow.value = false;
+    };
+
     return {
       modalVisivle,
       openModal,
       closeModal,
+      vum_isShow,
+      vum_showModal,
+      vum_closeModal,
     };
   },
 });
