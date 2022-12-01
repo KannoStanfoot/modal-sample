@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import TheModal from "@/components/TheModal.vue";
-
+import { useModal } from "@/composables/useModal";
 export default defineComponent({
   name: "HelloWorld",
   components: { TheModal },
@@ -30,16 +30,7 @@ export default defineComponent({
     msg: String,
   },
   setup() {
-    const modalVisivle = ref(false);
-
-    const openModal = () => {
-      console.log("モーダルを開くボタンをクリックしました");
-      modalVisivle.value = true;
-    };
-    const closeModal = () => {
-      modalVisivle.value = false;
-    };
-
+    const { modalVisivle, openModal, closeModal } = useModal();
     ///// vue-universal-modal
     const vum_isShow = ref(false);
 

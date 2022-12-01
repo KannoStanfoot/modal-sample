@@ -21,9 +21,9 @@ export default defineComponent({
       default: false,
     },
   },
+  emits: ["close"],
   setup(props, context) {
     const close = () => {
-      console.log("モーダル外をクリックしました");
       context.emit("close");
     };
 
