@@ -14,16 +14,16 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "TheModal",
+  name: "ErrorModal",
   props: {
     isVisible: {
       type: Boolean,
       default: false,
     },
   },
-  emits: ["close"],
   setup(props, context) {
     const close = () => {
+      console.log("モーダル外をクリックしました");
       context.emit("close");
     };
 
@@ -57,7 +57,7 @@ export default defineComponent({
   justify-content: center;
 
   color: #333;
-  background-color: white;
+  background-color: red;
   width: 600px;
   height: auto;
   border-radius: 20px;
