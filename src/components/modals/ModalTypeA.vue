@@ -1,11 +1,6 @@
 <template>
   <teleport to="body">
-    <div
-      class="modal"
-      id="sample-modal"
-      v-show="isVisible"
-      @click="close"
-    ></div>
+    <div class="modal" v-show="isVisible" @click="close"></div>
     <div class="modal-content" v-show="isVisible">
       <p>モーダルタイプA</p>
       <button ref="registrationButton">地域を登録する</button>
@@ -30,20 +25,11 @@ const close = () => {
   emit("close");
 };
 
-// const registerRegion = async () => {
-//   await new Promise((resolve) =>
-//     setTimeout(() => {
-//       console.log("地域が登録されました");
-//       return resolve;
-//     }, 3000)
-//   );
-// };
-
 const registrationButton = ref<HTMLButtonElement>();
 defineExpose({ registrationButton });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -68,7 +54,7 @@ defineExpose({ registrationButton });
   justify-content: center;
 
   color: #333;
-  background-color: rgb(220, 220, 255);
+  background-color: rgb(255, 220, 248);
   width: 600px;
   height: auto;
   border-radius: 20px;

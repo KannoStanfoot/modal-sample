@@ -1,14 +1,24 @@
-import { ref } from "vue";
+import { ref, Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
 
-export const useModal = (modalName: string) => {
-  const modalVisivle = ref(false);
+class ModalVisivles {
+  modalTypeA: Ref<boolean>;
+  modalTypeB: Ref<boolean>;
 
-  const openModal = () => {
-    modalVisivle.value = true;
+  constructor() {
+    this.modalTypeA = ref(false);
+    this.modalTypeB = ref(false);
+  }
+}
+
+const modalVisivles = new ModalVisivles();
+
+export const useModal = () => {
+  const openModal = (modalName: keyof ModalVisivles) => {
+    modalVisivles[modalName].value = true;
   };
-  const closeModal = () => {
-    modalVisivle.value = false;
+  const closeModal = (modalName: keyof ModalVisivles) => {
+    modalVisivles[modalName].value = false;
   };
 
   const userActions = (element: HTMLButtonElement | undefined) => {
@@ -24,14 +34,15 @@ export const useModal = (modalName: string) => {
   };
 
   const push = async (
+    modalName: keyof ModalVisivles,
     element: HTMLButtonElement | undefined /* , modalType */
   ) => {
-    openModal();
+    openModal(modalName);
 
     await userActions(element);
   };
   return {
-    modalVisivle,
+    modalVisivles,
     openModal,
     closeModal,
     push,

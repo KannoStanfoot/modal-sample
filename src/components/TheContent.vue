@@ -1,19 +1,17 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <button @click="openModal">モーダルを開く</button>
-    <!--     <TheModal :isVisible="modalVisivle" @close="closeModal" />
- -->
+    <button @click="openModalA">モーダルを開く</button>
 
     <ModalTypeA
       ref="modalTypeA"
-      :isVisible="modalVisivle"
-      @close="closeModal"
+      :isVisible="modalVisivles.modalTypeA.value"
+      @close="closeModal('modalTypeA')"
     />
     <ModalTypeB
       ref="modalTypeB"
-      :isVisible="modalVisivle"
-      @close="closeModal"
+      :isVisible="modalVisivles.modalTypeB.value"
+      @close="closeModal('modalTypeB')"
     />
   </div>
 </template>
@@ -25,29 +23,42 @@ import ModalTypeB from "@/components/modals/ModalTypeB.vue";
 import { useModal } from "@/composables/useModal";
 export default defineComponent({
   name: "TheContent",
-  components: { /* TheModal ,*/ ModalTypeA },
+  components: { /* TheModal ,*/ ModalTypeA, ModalTypeB },
   props: {
     msg: String,
   },
   setup() {
-    const { modalVisivle, closeModal, push } = useModal("ModalTypeA");
+    const { modalVisivles, closeModal, push } = useModal();
 
     const modalTypeA = ref<InstanceType<typeof ModalTypeA>>();
     const modalTypeB = ref<InstanceType<typeof ModalTypeB>>();
 
-    const openModal = () => {
-      const element = modalTypeA.value?.registrationButton;
-      push(element).then(() => {
-        console.log("地域を登録する処理をここで実行します");
-        closeModal();
+    const openModalB = () => {
+      const element = modalTypeB.value?.closeButton;
+      push("modalTypeB", element).then(() => {
+        console.log("モーダルBの処理をここで実行します");
+        closeModal("modalTypeB");
       });
     };
 
+    const openModalA = () => {
+      const element = modalTypeA.value?.registrationButton;
+      push("modalTypeA", element)
+        .then(() => {
+          console.log("地域を登録する処理をここで実行します");
+          closeModal("modalTypeA");
+        })
+        .then(() => {
+          openModalB();
+        });
+    };
+
     return {
-      modalVisivle,
-      openModal,
+      modalVisivles,
+      openModalA,
       closeModal,
       modalTypeA,
+      modalTypeB,
     };
   },
 });

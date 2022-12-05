@@ -1,17 +1,15 @@
 <template>
   <teleport to="body">
-    <div
-      class="modal"
-      id="sample-modal"
-      v-show="isVisible"
-      @click="close"
-    ></div>
-    <div class="modal-content" v-show="isVisible">モーダルのコンテンツです</div>
+    <div class="modal" v-show="isVisible" @click="close"></div>
+    <div class="modal-content" v-show="isVisible">
+      <p>モーダルBのコンテンツです</p>
+      <button ref="closeButton">閉じる</button>
+    </div>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { ref, defineProps, defineEmits, defineExpose } from "vue";
 
 defineProps({
   isVisible: {
@@ -22,11 +20,16 @@ defineProps({
 const emit = defineEmits<{ (e: "close"): void }>();
 
 const close = () => {
+  console.log("モーダル外をクリックしました");
+
   emit("close");
 };
+
+const closeButton = ref<HTMLButtonElement>();
+defineExpose({ closeButton });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -51,7 +54,7 @@ const close = () => {
   justify-content: center;
 
   color: #333;
-  background-color: white;
+  background-color: rgb(171, 189, 255);
   width: 600px;
   height: auto;
   border-radius: 20px;
