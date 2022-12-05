@@ -14,37 +14,49 @@ class ModalVisivles {
 const modalVisivles = new ModalVisivles();
 
 export const useModal = () => {
-  const openModal = (modalName: keyof ModalVisivles) => {
-    modalVisivles[modalName].value = true;
+  const openModal = (modalType: keyof ModalVisivles) => {
+    modalVisivles[modalType].value = true;
   };
-  const closeModal = (modalName: keyof ModalVisivles) => {
-    modalVisivles[modalName].value = false;
+  const closeModal = (modalType: keyof ModalVisivles) => {
+    modalVisivles[modalType].value = false;
   };
 
-  const userActions = (element: HTMLButtonElement | undefined) => {
-    return new Promise<void>((resolve, reject) => {
-      console.log("クリック待ちの対象", element);
-
-      if (element) {
+  const userActions = (elementList: Array<HTMLButtonElement | undefined>) => {
+    return new Promise<string>((resolve, reject) => {
+      for (const element of elementList) {
         useEventListener(element, "click", () => {
-          resolve();
+          const buttonType = element?.getAttribute("modal-button-type");
+          switch (buttonType) {
+            case "submit":
+              return resolve("submit");
+            case "close":
+              return resolve("close");
+
+            default:
+              break;
+          }
         });
       }
     });
   };
 
-  const push = async (
-    modalName: keyof ModalVisivles,
-    element: HTMLButtonElement | undefined /* , modalType */
+  const pushModal = async (
+    modalType: keyof ModalVisivles,
+    elementList: Array<HTMLButtonElement | undefined>
   ) => {
-    openModal(modalName);
+    openModal(modalType);
 
-    await userActions(element);
+    return await userActions(elementList);
+  };
+
+  const popModal = (modalType: keyof ModalVisivles) => {
+    closeModal(modalType);
   };
   return {
     modalVisivles,
     openModal,
     closeModal,
-    push,
+    pushModal,
+    popModal,
   };
 };

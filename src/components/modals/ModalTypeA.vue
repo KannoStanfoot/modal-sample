@@ -1,9 +1,14 @@
 <template>
-  <teleport to="body">
+  <teleport to="#modals">
     <div class="modal" v-show="isVisible" @click="close"></div>
     <div class="modal-content" v-show="isVisible">
       <p>モーダルタイプA</p>
-      <button ref="registrationButton">地域を登録する</button>
+      <button ref="submitButton" :modal-button-type="modalButtonTypeA">
+        次のモーダルを開く
+      </button>
+      <button ref="closeButton" :modal-button-type="modalButtonTypeB">
+        閉じる
+      </button>
     </div>
   </teleport>
 </template>
@@ -19,14 +24,19 @@ defineProps({
 });
 const emit = defineEmits<{ (e: "close"): void }>();
 
+// 利用するタイプを型定義ファイルで定義しておく
+const modalButtonTypeA = "submit";
+const modalButtonTypeB = "close";
+
 const close = () => {
   console.log("モーダル外をクリックしました");
 
   emit("close");
 };
 
-const registrationButton = ref<HTMLButtonElement>();
-defineExpose({ registrationButton });
+const submitButton = ref<HTMLButtonElement>();
+const closeButton = ref<HTMLButtonElement>();
+defineExpose({ submitButton, closeButton });
 </script>
 
 <style lang="scss" scoped>

@@ -6,12 +6,12 @@
     <ModalTypeA
       ref="modalTypeA"
       :isVisible="modalVisivles.modalTypeA.value"
-      @close="closeModal('modalTypeA')"
+      @close="popModal('modalTypeA')"
     />
     <ModalTypeB
       ref="modalTypeB"
       :isVisible="modalVisivles.modalTypeB.value"
-      @close="closeModal('modalTypeB')"
+      @close="popModal('modalTypeB')"
     />
   </div>
 </template>
@@ -23,40 +23,48 @@ import ModalTypeB from "@/components/modals/ModalTypeB.vue";
 import { useModal } from "@/composables/useModal";
 export default defineComponent({
   name: "TheContent",
-  components: { /* TheModal ,*/ ModalTypeA, ModalTypeB },
+  components: { ModalTypeA, ModalTypeB },
   props: {
     msg: String,
   },
   setup() {
-    const { modalVisivles, closeModal, push } = useModal();
+    const { modalVisivles, popModal, pushModal } = useModal();
 
     const modalTypeA = ref<InstanceType<typeof ModalTypeA>>();
     const modalTypeB = ref<InstanceType<typeof ModalTypeB>>();
 
     const openModalB = () => {
       const element = modalTypeB.value?.closeButton;
-      push("modalTypeB", element).then(() => {
-        console.log("モーダルBの処理をここで実行します");
-        closeModal("modalTypeB");
+      pushModal("modalTypeB", [element]).then(() => {
+        popModal("modalTypeB");
       });
     };
 
     const openModalA = () => {
-      const element = modalTypeA.value?.registrationButton;
-      push("modalTypeA", element)
-        .then(() => {
-          console.log("地域を登録する処理をここで実行します");
-          closeModal("modalTypeA");
-        })
-        .then(() => {
-          openModalB();
-        });
+      const element1 = modalTypeA.value?.submitButton;
+      const element2 = modalTypeA.value?.closeButton;
+      pushModal("modalTypeA", [element1, element2]).then((resolve) => {
+        switch (resolve) {
+          case "submit":
+            popModal("modalTypeA");
+            openModalB();
+            break;
+          case "close":
+            popModal("modalTypeA");
+
+            break;
+
+          default:
+            popModal("modalTypeA");
+            break;
+        }
+      });
     };
 
     return {
       modalVisivles,
       openModalA,
-      closeModal,
+      popModal,
       modalTypeA,
       modalTypeB,
     };

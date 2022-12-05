@@ -3,7 +3,9 @@
     <div class="modal" v-show="isVisible" @click="close"></div>
     <div class="modal-content" v-show="isVisible">
       <p>モーダルBのコンテンツです</p>
-      <button ref="closeButton">閉じる</button>
+      <button ref="closeButton" :modal-button-type="modalButtonType">
+        閉じる
+      </button>
     </div>
   </teleport>
 </template>
@@ -21,9 +23,11 @@ const emit = defineEmits<{ (e: "close"): void }>();
 
 const close = () => {
   console.log("モーダル外をクリックしました");
-
   emit("close");
 };
+
+// 利用するタイプを型定義ファイルで型定義しておく
+const modalButtonType = "close";
 
 const closeButton = ref<HTMLButtonElement>();
 defineExpose({ closeButton });
