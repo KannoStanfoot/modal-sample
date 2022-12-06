@@ -43,22 +43,26 @@ export default defineComponent({
     const openModalA = () => {
       const element1 = modalTypeA.value?.submitButton;
       const element2 = modalTypeA.value?.closeButton;
-      pushModal("modalTypeA", [element1, element2]).then((resolve) => {
-        switch (resolve) {
-          case "submit":
-            popModal("modalTypeA");
-            openModalB();
-            break;
-          case "close":
-            popModal("modalTypeA");
+      pushModal("modalTypeA", [element1, element2])
+        .then((resolve) => {
+          switch (resolve) {
+            case "submit":
+              popModal("modalTypeA");
+              openModalB();
+              break;
+            case "close":
+              popModal("modalTypeA");
 
-            break;
+              break;
 
-          default:
-            popModal("modalTypeA");
-            break;
-        }
-      });
+            default:
+              popModal("modalTypeA");
+              break;
+          }
+        })
+        .catch((reject) => {
+          // 予期せぬエラー時の処理を記載
+        });
     };
 
     return {

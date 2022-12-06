@@ -26,7 +26,7 @@ const close = () => {
   emit("close");
 };
 
-// 利用するタイプを型定義ファイルで型定義しておく
+// 利用するタイプを型定義ファイルで定義しておく
 const modalButtonType = "close";
 
 const closeButton = ref<HTMLButtonElement>();
