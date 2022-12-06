@@ -1,14 +1,17 @@
-import { ref, Ref } from "vue";
+import { ref, watch, type Ref, ComputedRef } from "vue";
 import { useEventListener } from "@vueuse/core";
+import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 
 /** 各モーダルの表示状態クラス */
 export class ModalsVisibleStatus {
   modalTypeA: Ref<boolean>;
   modalTypeB: Ref<boolean>;
+  modalTypeC: Ref<boolean>;
 
   constructor() {
     this.modalTypeA = ref(false);
     this.modalTypeB = ref(false);
+    this.modalTypeC = ref(false);
   }
 }
 
@@ -63,11 +66,32 @@ export const useModal = () => {
     });
   };
 
+  // target の型は src/components/modals/ModalTypeA.vue のmodalButtonTypeAと同じ型定義ファイルを利用想定
+  const scrollLock = (
+    isShowModal: ComputedRef<boolean>,
+    target: keyof ModalsVisibleStatus
+  ) => {
+    // スクロールロック
+    watch(
+      isShowModal,
+      (isShow) => {
+        if (isShow === true) {
+          const modal = document.querySelector(`.${target}`);
+          if (modal) disableBodyScroll(modal);
+        } else {
+          clearAllBodyScrollLocks();
+        }
+      },
+      { immediate: true }
+    );
+  };
+
   return {
     modalsVisibleStatus,
     openModal,
     closeModal,
     pushModal,
     popModal,
+    scrollLock,
   };
 };

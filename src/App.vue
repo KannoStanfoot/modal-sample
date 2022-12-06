@@ -1,6 +1,8 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <TheContent />
+  <div id="app">
+    <img alt="Vue logo" src="./assets/logo.png" />
+    <TheContent />
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,6 +25,5 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  height: 1000px;
 }
 </style>
