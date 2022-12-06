@@ -1,36 +1,43 @@
 <template>
-  <teleport to="body">
-    <div class="modal" v-show="isVisible" @click="close"></div>
-    <div class="modal-content" v-show="isVisible">
-      <p>モーダルBのコンテンツです</p>
-      <button ref="closeButton" :modal-button-type="modalButtonType">
-        閉じる
-      </button>
+  <teleport to="#modals">
+    <div class="modal" v-show="shouldShowThisComponent">
+      <div class="modal-background" @click="popModal(modalType)"></div>
+      <div class="modal-content">
+        <p>モーダルBのコンテンツです</p>
+        <button ref="closeButton" :modal-button-type="modalButtonType">
+          閉じる
+        </button>
+      </div>
     </div>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, defineExpose } from "vue";
+import { ref, computed, defineExpose } from "vue";
+import { useModal, type ModalsVisibleStatus } from "@/composables/useModal";
 
-defineProps({
-  isVisible: {
-    type: Boolean,
-    default: false,
-  },
-});
-const emit = defineEmits<{ (e: "close"): void }>();
-
-const close = () => {
-  console.log("モーダル外をクリックしました");
-  emit("close");
-};
+/** 本コンポーネントのモーダル名 */
+const modalType: keyof ModalsVisibleStatus = "modalTypeB";
 
 // 利用するタイプを型定義ファイルで定義しておく
 const modalButtonType = "close";
 
+const { modalsVisibleStatus, pushModal, popModal } = useModal();
+
+/** 本コンポーネントを表示するか否か */
+const shouldShowThisComponent = computed(() => {
+  return modalsVisibleStatus.modalTypeB.value;
+});
+
+// クリック対象のDOM参照
 const closeButton = ref<HTMLButtonElement>();
-defineExpose({ closeButton });
+
+/** 本コンポーネントのモーダルを開く */
+const openModal = async () => {
+  return await pushModal(modalType, [closeButton.value]);
+};
+
+defineExpose({ openModal });
 </script>
 
 <style lang="scss" scoped>

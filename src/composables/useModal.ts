@@ -1,7 +1,8 @@
 import { ref, Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
 
-class ModalVisivles {
+/** 各モーダルの表示状態クラス */
+export class ModalsVisibleStatus {
   modalTypeA: Ref<boolean>;
   modalTypeB: Ref<boolean>;
 
@@ -11,33 +12,46 @@ class ModalVisivles {
   }
 }
 
-const modalVisivles = new ModalVisivles();
+/** 各モーダルの表示状態インスタンス */
+const modalsVisibleStatus = new ModalsVisibleStatus();
 
 export const useModal = () => {
-  const openModal = (modalType: keyof ModalVisivles) => {
-    modalVisivles[modalType].value = true;
+  /** モーダルを開く */
+  const openModal = (modalType: keyof ModalsVisibleStatus) => {
+    modalsVisibleStatus[modalType].value = true;
   };
-  const closeModal = (modalType: keyof ModalVisivles) => {
-    modalVisivles[modalType].value = false;
+  /** モーダルを閉じる */
+  const closeModal = (modalType: keyof ModalsVisibleStatus) => {
+    modalsVisibleStatus[modalType].value = false;
   };
 
+  /** モーダルを開く処理を実行後、ユーザーがモーダル上のボタンをクリックするまで待機する */
   const pushModal = async (
-    modalType: keyof ModalVisivles,
+    modalType: keyof ModalsVisibleStatus,
     elementList: Array<HTMLButtonElement | undefined>
   ) => {
     openModal(modalType);
 
-    return await userActions(elementList);
+    return await onClickButton(modalType, elementList);
   };
-  // pushに合わせてpopにしたけど、ただcloseModal実行するだけ
-  const popModal = (modalType: keyof ModalVisivles) => {
+  /** モーダルを閉じる処理を呼び出す */
+  const popModal = (modalType: keyof ModalsVisibleStatus) => {
     closeModal(modalType);
   };
 
-  const userActions = (elementList: Array<HTMLButtonElement | undefined>) => {
+  /** モーダルコンテンツ内のボタンをユーザーがクリックした際の処理
+   */
+  const onClickButton = (
+    modalType: keyof ModalsVisibleStatus,
+    elementList: Array<HTMLButtonElement | undefined>
+  ) => {
     return new Promise<string>((resolve, reject) => {
       for (const element of elementList) {
         useEventListener(element, "click", () => {
+          // ボタン押下後にモーダルを閉じる
+          closeModal(modalType);
+
+          // buttonType の型は src/components/modals/ModalTypeA.vue のmodalButtonTypeAと同じ型定義ファイルを利用想定
           const buttonType = element?.getAttribute("modal-button-type");
           if (buttonType) {
             return resolve(buttonType);
@@ -50,7 +64,7 @@ export const useModal = () => {
   };
 
   return {
-    modalVisivles,
+    modalsVisibleStatus,
     openModal,
     closeModal,
     pushModal,

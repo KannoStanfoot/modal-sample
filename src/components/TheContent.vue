@@ -1,18 +1,9 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <button @click="openModalA">モーダルを開く</button>
 
-    <ModalTypeA
-      ref="modalTypeA"
-      :isVisible="modalVisivles.modalTypeA.value"
-      @close="popModal('modalTypeA')"
-    />
-    <ModalTypeB
-      ref="modalTypeB"
-      :isVisible="modalVisivles.modalTypeB.value"
-      @close="popModal('modalTypeB')"
-    />
+    <ModalTypeA ref="modalTypeA" />
+    <ModalTypeB ref="modalTypeB" />
   </div>
 </template>
 
@@ -20,55 +11,45 @@
 import { defineComponent, ref } from "vue";
 import ModalTypeA from "@/components/modals/ModalTypeA.vue";
 import ModalTypeB from "@/components/modals/ModalTypeB.vue";
-import { useModal } from "@/composables/useModal";
 export default defineComponent({
   name: "TheContent",
   components: { ModalTypeA, ModalTypeB },
-  props: {
-    msg: String,
-  },
   setup() {
-    const { modalVisivles, popModal, pushModal } = useModal();
-
+    // モーダルコンポーネントの参照
     const modalTypeA = ref<InstanceType<typeof ModalTypeA>>();
     const modalTypeB = ref<InstanceType<typeof ModalTypeB>>();
 
+    /** modalTypeB のモーダルを開いてから閉じるまでの一連の処理 */
     const openModalB = () => {
-      const element = modalTypeB.value?.closeButton;
-      pushModal("modalTypeB", [element]).then(() => {
-        popModal("modalTypeB");
+      modalTypeB.value?.openModal().then(() => {
+        console.log("modalB|コンテンツ内ボタンクリック成功後の処理");
       });
     };
 
+    /** modalTypeA のモーダルを開いてから閉じるまでの一連の処理 */
     const openModalA = () => {
-      const element1 = modalTypeA.value?.submitButton;
-      const element2 = modalTypeA.value?.closeButton;
-      pushModal("modalTypeA", [element1, element2])
-        .then((resolve) => {
+      modalTypeA.value
+        ?.openModal()
+        .then((resolve: string) => {
+          // モーダル上のボタン押下後の処理
           switch (resolve) {
             case "submit":
-              popModal("modalTypeA");
               openModalB();
               break;
             case "close":
-              popModal("modalTypeA");
-
               break;
 
             default:
-              popModal("modalTypeA");
               break;
           }
         })
-        .catch((reject) => {
+        .catch((reject: string) => {
           // 予期せぬエラー時の処理を記載
         });
     };
 
     return {
-      modalVisivles,
       openModalA,
-      popModal,
       modalTypeA,
       modalTypeB,
     };

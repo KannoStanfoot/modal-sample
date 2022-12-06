@@ -1,47 +1,52 @@
 <template>
   <teleport to="#modals">
-    <div class="modal" v-show="isVisible" @click="close"></div>
-    <div class="modal-content" v-show="isVisible">
-      <p>モーダルタイプA</p>
-      <button ref="submitButton" :modal-button-type="modalButtonTypeA">
-        次のモーダルを開く
-      </button>
-      <button ref="closeButton" :modal-button-type="modalButtonTypeB">
-        閉じる
-      </button>
+    <div class="modal" v-show="shouldShowThisComponent">
+      <div class="modal-background" @click="popModal(modalType)"></div>
+      <div class="modal-content">
+        <p>モーダルタイプA</p>
+        <button ref="submitButton" :modal-button-type="modalButtonTypeA">
+          次のモーダルを開く
+        </button>
+        <button ref="closeButton" :modal-button-type="modalButtonTypeB">
+          閉じる
+        </button>
+      </div>
     </div>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, defineExpose } from "vue";
+import { ref, computed, defineExpose } from "vue";
+import { useModal, type ModalsVisibleStatus } from "@/composables/useModal";
 
-defineProps({
-  isVisible: {
-    type: Boolean,
-    default: false,
-  },
-});
-const emit = defineEmits<{ (e: "close"): void }>();
+/** 本コンポーネントのモーダル名 */
+const modalType: keyof ModalsVisibleStatus = "modalTypeA";
 
 // 利用するタイプを型定義ファイルで定義しておく
 const modalButtonTypeA = "submit";
 const modalButtonTypeB = "close";
 
-// モーダル外クリックしたらemitでイベント発火で良い？ボタンと同じようにタグ付けてrefで参照もできなくはないけど
-const close = () => {
-  console.log("モーダル外をクリックしました");
+const { modalsVisibleStatus, pushModal, popModal } = useModal();
 
-  emit("close");
-};
+/** 本コンポーネントを表示するか否か */
+const shouldShowThisComponent = computed(() => {
+  return modalsVisibleStatus.modalTypeA.value;
+});
 
+// クリック対象のDOM参照
 const submitButton = ref<HTMLButtonElement>();
 const closeButton = ref<HTMLButtonElement>();
-defineExpose({ submitButton, closeButton });
+
+/** 本コンポーネントのモーダルを開く */
+const openModal = async () => {
+  return await pushModal(modalType, [submitButton.value, closeButton.value]);
+};
+
+defineExpose({ openModal });
 </script>
 
 <style lang="scss" scoped>
-.modal {
+.modal-background {
   position: fixed;
   top: 0;
   right: 0;
