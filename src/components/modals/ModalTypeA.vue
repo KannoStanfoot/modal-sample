@@ -28,6 +28,7 @@ const emit = defineEmits<{ (e: "close"): void }>();
 const modalButtonTypeA = "submit";
 const modalButtonTypeB = "close";
 
+// モーダル外クリックしたらemitでイベント発火で良い？ボタンと同じようにタグ付けてrefで参照もできなくはないけど
 const close = () => {
   console.log("モーダル外をクリックしました");
 

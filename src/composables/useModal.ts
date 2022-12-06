@@ -21,25 +21,6 @@ export const useModal = () => {
     modalVisivles[modalType].value = false;
   };
 
-  const userActions = (elementList: Array<HTMLButtonElement | undefined>) => {
-    return new Promise<string>((resolve, reject) => {
-      for (const element of elementList) {
-        useEventListener(element, "click", () => {
-          const buttonType = element?.getAttribute("modal-button-type");
-          switch (buttonType) {
-            case "submit":
-              return resolve("submit");
-            case "close":
-              return resolve("close");
-
-            default:
-              break;
-          }
-        });
-      }
-    });
-  };
-
   const pushModal = async (
     modalType: keyof ModalVisivles,
     elementList: Array<HTMLButtonElement | undefined>
@@ -48,10 +29,26 @@ export const useModal = () => {
 
     return await userActions(elementList);
   };
-
+  // pushに合わせてpopにしたけど、ただcloseModal実行するだけ
   const popModal = (modalType: keyof ModalVisivles) => {
     closeModal(modalType);
   };
+
+  const userActions = (elementList: Array<HTMLButtonElement | undefined>) => {
+    return new Promise<string>((resolve, reject) => {
+      for (const element of elementList) {
+        useEventListener(element, "click", () => {
+          const buttonType = element?.getAttribute("modal-button-type");
+          if (buttonType) {
+            return resolve(buttonType);
+          } else {
+            return reject("error");
+          }
+        });
+      }
+    });
+  };
+
   return {
     modalVisivles,
     openModal,
