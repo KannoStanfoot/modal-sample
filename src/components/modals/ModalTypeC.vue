@@ -3,13 +3,20 @@
     <div :class="modalType" v-show="shouldShowThisComponent">
       <div class="modal-background" @click="popModal(modalType)"></div>
       <div class="modal-content">
-        <p>モーダルタイプA</p>
-        <button ref="submitButton" :modal-button-type="modalButtonTypeA">
-          次のモーダルを開く
-        </button>
-        <button ref="closeButton" :modal-button-type="modalButtonTypeB">
-          閉じる
-        </button>
+        <div class="box">
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+          <p>モーダルタイプC</p>
+        </div>
       </div>
     </div>
   </teleport>
@@ -20,17 +27,13 @@ import { ref, computed, defineExpose } from "vue";
 import { useModal, type ModalsVisibleStatus } from "@/composables/useModal";
 
 /** 本コンポーネントのモーダル名 */
-const modalType: keyof ModalsVisibleStatus = "modalTypeA";
-
-// 利用するタイプを型定義ファイルで定義しておく
-const modalButtonTypeA = "submit";
-const modalButtonTypeB = "close";
+const modalType: keyof ModalsVisibleStatus = "modalTypeC";
 
 const { modalsVisibleStatus, pushModal, popModal, scrollLock } = useModal();
 
 /** 本コンポーネントを表示するか否か */
 const shouldShowThisComponent = computed(() => {
-  return modalsVisibleStatus.modalTypeA.value;
+  return modalsVisibleStatus.modalTypeC.value;
 });
 
 // クリック対象のDOM参照
@@ -74,10 +77,17 @@ defineExpose({ openModal });
 
   color: #333;
   background-color: rgb(255, 220, 248);
-  overflow: scroll;
   width: 600px;
   height: 100px;
   border-radius: 20px;
   padding: 20px;
+
+  .box {
+    width: 400px;
+    height: 100px;
+    overflow: scroll;
+
+    background-color: rgb(186, 255, 231);
+  }
 }
 </style>
