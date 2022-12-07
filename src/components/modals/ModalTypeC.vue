@@ -77,7 +77,6 @@ defineExpose({ openModal });
 
   color: #333;
   background-color: rgb(255, 220, 248);
-  overflow: scroll;
   width: 600px;
   height: 100px;
   border-radius: 20px;
@@ -85,7 +84,9 @@ defineExpose({ openModal });
 
   .box {
     width: 400px;
-    height: 900px;
+    height: 100px;
+    overflow: scroll;
+
     background-color: rgb(186, 255, 231);
   }
 }
